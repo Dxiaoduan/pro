@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.mapper.UserMapper">
+    <select id="findAll1" resultType="user">
+        select * from user
+    </select>
+    <insert id="addUser" parameterType="user">
+        insert into user (username,birthday,sex,address) values (#{username},#{birthday},#{sex},#{address})
+    </insert>
+    <delete id="delUser" parameterType="user">
+        delete from user where id=#{id}
+    </delete>
+    <update id="updateUser" parameterType="user">
+        update user set username=#{username},birthday=#{birthday},sex=#{sex},address=#{address} where id=#{id}
+    </update>
+<!--    多条件查询-->
+    <select id="selectByMany" resultType="user">
+        select *
+        from user
+        where username=#{username} and sex=#{sex};
+    </select>
+<!--    模糊查询-->
+    <select id="selectLike" resultType="user">
+        select *
+        from user where username like '%' #{username} '%';
+
+    </select>
+<!--    新增user返回id-->
+    <insert id="addUSerToId" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into USER (username,birthday,sex,address)
+        values (#{username},#{birthday},#{sex},#{address});
+    </insert>
+<!--    多条件查询-->
+    <select id="findByMany" resultType="user">
+        select * from user
+        <where>
+            <if test="username!=null">
+                and username=#{username}
+            </if>
+            <if test="sex!=null">
+                and sex=#{sex}
+            </if>
+        </where>
+    </select>
+<!--    -->
+    <update id="updateByMany" parameterType="user">
+        update user
+            <set>
+                <if test="username!=null">
+                    username=#{username},
+                </if>
+                <if test="birthday!=null">
+                    birthday=#{birthday},
+                </if>
+                <if test="sex!=null">
+                    sex=#{sex},
+                </if>
+                <if test="address!=null">
+                    address=#{address},
+                </if>
+            </set>
+            where id =#{id}
+    </update>
+<!--    foreach-->
+    <select id="findList" resultType="user" parameterType="list">
+        select *
+        from user
+        where id in
+        <foreach collection="list" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="findArray" resultType="user">
+        select *
+        from user
+        where id in
+        <foreach collection="array" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </select>
+</mapper>
